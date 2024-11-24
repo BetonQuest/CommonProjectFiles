@@ -1,0 +1,55 @@
+name: Update Files
+description: |
+  Updates all common project files by pulling them from a central repository
+  and creating a pull request in the target repository if there are changes.
+
+inputs:
+  source-repo:
+    description: The URL of the repository containing the common files.
+    default: https://github.com/BetonQuest/CommonProjectFiles
+  branch-name:
+    description: The branch name to use for syncing changes.
+    default: CommonProjectFiles-Sync
+  ignored-files:
+    description: |
+      A comma-separated list of additional files or directories to ignore during the sync process.
+      Example: .github,custom-config.json
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout Target Repository
+      uses: actions/checkout@v4
+
+    - name: Clone Source Repository
+      run: |
+        git clone --depth 1 ${{ inputs.source-repo }} common-files
+
+    - name: Prepare Ignored Files
+      run: |
+        DEFAULT_IGNORED_FILES="README.md,LICENSE,action.yml"
+        IGNORE_FILES="${DEFAULT_IGNORED_FILES}"
+        if [[ -n "${{ inputs.ignored-files }}" ]]; then
+          IGNORE_FILES+=",${{ inputs.ignored-files }}"
+        fi
+        echo "ignore_files=${IGNORE_FILES}" >> $GITHUB_ENV
+
+    - name: Sync Files
+      run: |
+        echo "Ignoring files: ${{ env.ignore_files }}"
+        for FILE in $(echo ${{ env.ignore_files }} | tr ',' ' '); do
+          rm -rf "common-files/$FILE"
+        done
+        rsync -av --delete common-files/ ./
+        git status
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v7
+      with:
+        branch: ${{ inputs.branch-name }}
+        title: "Sync common files"
+        body: |
+          This pull request updates the repository with the latest common files from the source repository.
+        commit-message: "Sync common files from central repository"
+        delete-branch: true
