@@ -25,12 +25,12 @@ runs:
     - name: Clone Source Repository
       shell: bash --noprofile --norc -euo pipefail {0}
       run: |
-        git clone --depth 1 ${{ inputs.source-repo }} common-files
+        git clone --depth 1 ${{ inputs.source-repo }} CommonProjectFiles
 
     - name: Prepare Ignored Files
       shell: bash --noprofile --norc -euo pipefail {0}
       run: |
-        DEFAULT_IGNORED_FILES="README.md,LICENSE,action.yml"
+        DEFAULT_IGNORED_FILES=".git,README.md,LICENSE,action.yml"
         IGNORE_FILES="${DEFAULT_IGNORED_FILES}"
         if [[ -n "${{ inputs.ignored-files }}" ]]; then
           IGNORE_FILES+=",${{ inputs.ignored-files }}"
@@ -40,14 +40,12 @@ runs:
     - name: Sync Files
       shell: bash --noprofile --norc -euo pipefail {0}
       run: |
-        echo "Ignoring files: ${{ env.ignore_files }}"
-        TEMP_DIR=$(mktemp -d)
-        cp -r common-files/* "$TEMP_DIR/"
-        for FILE in $(echo ${{ env.ignore_files }} | tr ',' ' '); do
-        rm -rf "$TEMP_DIR/$FILE"
+        for FILE in $(ls -A CommonProjectFiles); do
+          if [[ ! ",${{ env.ignore_files }}," =~ ,${FILE}, ]]; then
+            mv "CommonProjectFiles/$FILE" .
+          fi
         done
-        rsync -av --exclude '.git/' "$TEMP_DIR/" ./
-        rm -rf "$TEMP_DIR"
+        rm -rf CommonProjectFiles
 
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v7
