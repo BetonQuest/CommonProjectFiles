@@ -23,10 +23,12 @@ runs:
       uses: actions/checkout@v4
 
     - name: Clone Source Repository
+      shell: bash --noprofile --norc -euo pipefail {0}
       run: |
         git clone --depth 1 ${{ inputs.source-repo }} common-files
 
     - name: Prepare Ignored Files
+      shell: bash --noprofile --norc -euo pipefail {0}
       run: |
         DEFAULT_IGNORED_FILES="README.md,LICENSE,action.yml"
         IGNORE_FILES="${DEFAULT_IGNORED_FILES}"
@@ -36,6 +38,7 @@ runs:
         echo "ignore_files=${IGNORE_FILES}" >> $GITHUB_ENV
 
     - name: Sync Files
+      shell: bash --noprofile --norc -euo pipefail {0}
       run: |
         echo "Ignoring files: ${{ env.ignore_files }}"
         for FILE in $(echo ${{ env.ignore_files }} | tr ',' ' '); do
