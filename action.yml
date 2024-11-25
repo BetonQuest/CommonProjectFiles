@@ -53,7 +53,7 @@ runs:
         done
         cd ..
         sync
-        rsync -av --delete CommonProjectFiles/ ./
+        rsync -av CommonProjectFiles/ ./
         rm -rf CommonProjectFiles
 
     - name: Create Pull Request
