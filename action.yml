@@ -51,6 +51,9 @@ runs:
             fi
           done
         done
+        cd ..
+        rsync -av --delete CommonProjectFiles/ ./
+        rm -rf CommonProjectFiles
 
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v7
