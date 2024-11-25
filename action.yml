@@ -41,10 +41,10 @@ runs:
       shell: bash --noprofile --norc -euo pipefail {0}
       run: |
         echo "Ignoring files: ${{ env.ignore_files }}"
-        rsync -av --delete \
-          $(echo ${{ env.ignore_files }} | tr ',' '\n' | sed 's/^/--exclude=/') \
-          common-files/ ./
-        git status
+        for FILE in $(echo ${{ env.ignore_files }} | tr ',' ' '); do
+          rm -rf "common-files/$FILE"
+        done
+        rsync -av --delete --exclude '.git/' common-files/ ./
 
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v7
