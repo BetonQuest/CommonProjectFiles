@@ -40,12 +40,17 @@ runs:
     - name: Sync Files
       shell: bash --noprofile --norc -euo pipefail {0}
       run: |
-        for FILE in $(ls -A CommonProjectFiles); do
-          if [[ ! ",${{ env.ignore_files }}," =~ ,${FILE}, ]]; then
-            mv "CommonProjectFiles/$FILE" .
-          fi
+        IFS=',' read -ra IGNORE_FILES <<< ${{ env.ignore_files }}
+        cd CommonProjectFiles
+        find . -mindepth 1 | while read -r FILE; do
+          RELATIVE_PATH="${FILE#./}"
+          for IGNORE in "${IGNORE_FILES[@]}"; do
+            if [[ "$RELATIVE_PATH" == "$IGNORE" || "$RELATIVE_PATH" == "$IGNORE/"* ]]; then
+              rm -rf "$FILE"
+              break
+            fi
+          done
         done
-        rm -rf CommonProjectFiles
 
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v7
