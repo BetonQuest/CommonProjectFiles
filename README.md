@@ -21,5 +21,5 @@ jobs:
 
     steps:
       - name: Sync Common Files
-        uses: BetonQuest/CommonFileSync@main
+        uses: BetonQuest/CommonProjectFile@main
 ```
