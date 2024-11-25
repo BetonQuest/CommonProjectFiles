@@ -42,11 +42,11 @@ runs:
       run: |
         echo "Ignoring files: ${{ env.ignore_files }}"
         TEMP_DIR=$(mktemp -d)
-        cp -r common-files/* "$TEMP_DIR/"        
+        cp -r common-files/* "$TEMP_DIR/"
         for FILE in $(echo ${{ env.ignore_files }} | tr ',' ' '); do
-          rm -rf "$TEMP_DIR/$FILE"
+        rm -rf "$TEMP_DIR/$FILE"
         done
-        rsync -av --delete --exclude '.git/' "$TEMP_DIR/" ./
+        rsync -av --exclude '.git/' "$TEMP_DIR/" ./
         rm -rf "$TEMP_DIR"
 
     - name: Create Pull Request
