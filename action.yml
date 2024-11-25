@@ -52,6 +52,7 @@ runs:
           done
         done
         cd ..
+        sync
         rsync -av --delete CommonProjectFiles/ ./
         rm -rf CommonProjectFiles
 
