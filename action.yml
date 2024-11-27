@@ -29,8 +29,6 @@ runs:
   steps:
     - name: Checkout Target Repository
       uses: actions/checkout@v4
-      with:
-        token: '${{ inputs.token }}'
 
     - name: Clone Source Repository
       shell: bash --noprofile --norc -euo pipefail {0}
@@ -83,3 +81,4 @@ runs:
           This pull request updates the repository with the latest common files from the source repository.
         commit-message: "Sync common files from central repository"
         delete-branch: true
+        token: '${{ inputs.token }}'
