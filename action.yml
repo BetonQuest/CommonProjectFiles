@@ -35,7 +35,7 @@ runs:
     - name: Prepare Ignored Files
       shell: bash --noprofile --norc -euo pipefail {0}
       run: |
-        DEFAULT_IGNORED_FILES=".git,README.md,LICENSE,action.yml,.github/workflows/EditorConfig.yml"
+        DEFAULT_IGNORED_FILES=".git,README.md,LICENSE,action.yml,.github/workflows/editorconfig.yml"
         IGNORE_FILES="${DEFAULT_IGNORED_FILES}"
         if [[ -n "${{ inputs.ignored-files }}" ]]; then
           IGNORE_FILES+=",${{ inputs.ignored-files }}"
