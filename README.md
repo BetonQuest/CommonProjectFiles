@@ -31,4 +31,9 @@ You can also run the action with the following arguments:
           source-repo: https://github.com/BetonQuest/CommonProjectFiles
           ignored-files: mvnw,mvnw.cmd
           include-default-ignored-files: .github/workflows/editorconfig.yml
+          token: ${{ secrets.ACCESS_TOKEN }}
 ```
+
+Especially the `token` is important,
+if you want that the created PR can trigger `on: push` or `on: pull_request` workflows,
+or if you want to edit workflows.
