@@ -20,12 +20,17 @@ inputs:
       A comma-separated list of entries from the default ignore list to re-add (i.e., include back during the sync).
       Example: LICENSE,README.md
     default: ''
+  token:
+    description: The GitHub token to use for cloning the target repository.
+    default: ${{ github.token }}
 
 runs:
   using: composite
   steps:
     - name: Checkout Target Repository
       uses: actions/checkout@v4
+      with:
+        token: '${{ inputs.token }}'
 
     - name: Clone Source Repository
       shell: bash --noprofile --norc -euo pipefail {0}
