@@ -23,3 +23,12 @@ jobs:
       - name: Sync Common Files
         uses: BetonQuest/CommonProjectFiles@main
 ```
+
+You can also run the action with the following arguments:
+
+```yaml
+        with:
+          source-repo: https://github.com/BetonQuest/CommonProjectFiles
+          ignored-files: mvnw,mvnw.cmd
+          include-default-ignored-files: .github/workflows/EditorConfig.yml
+```
