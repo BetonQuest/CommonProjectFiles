@@ -15,6 +15,11 @@ inputs:
       A comma-separated list of additional files or directories to ignore during the sync process.
       Example: .github,custom-config.json
     default: ''
+  include-default-ignored-files:
+    description: |
+      A comma-separated list of entries from the default ignore list to re-add (i.e., include back during the sync).
+      Example: LICENSE,README.md
+    default: ''
 
 runs:
   using: composite
@@ -34,6 +39,14 @@ runs:
         IGNORE_FILES="${DEFAULT_IGNORED_FILES}"
         if [[ -n "${{ inputs.ignored-files }}" ]]; then
           IGNORE_FILES+=",${{ inputs.ignored-files }}"
+        fi
+        if [[ -n "${{ inputs.include-default-ignored-files }}" ]]; then
+          IFS=',' read -ra READD_ENTRIES <<< "${{ inputs.include-default-ignored-files }}"
+          for ENTRY in "${READD_ENTRIES[@]}"; do
+            IGNORE_FILES=$(echo "$IGNORE_FILES" | sed "s~,$ENTRY~~g")
+            IGNORE_FILES=$(echo "$IGNORE_FILES" | sed "s~^$ENTRY,~~g")
+            IGNORE_FILES=$(echo "$IGNORE_FILES" | sed "s~,$ENTRY\$~~g")
+          done
         fi
         echo "ignore_files=${IGNORE_FILES}" >> $GITHUB_ENV
 
