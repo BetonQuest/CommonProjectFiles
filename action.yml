@@ -28,7 +28,7 @@ runs:
   using: composite
   steps:
     - name: Checkout Target Repository
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Clone Source Repository
       shell: bash --noprofile --norc -euo pipefail {0}
